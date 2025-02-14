@@ -1,0 +1,4 @@
+class Fireball{
+    constructor(){
+    }
+}
