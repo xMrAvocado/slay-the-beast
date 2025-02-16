@@ -50,7 +50,7 @@ body {
     overflow: hidden; /* previene que los elementos salgan visualmente del game-box */
     user-select: none; /* previene que los elementos del game-box sean resaltados al hacer click */
   
-    background-image: url("../images/bg.png");
+    background-image: url("../images/FondoJuego.gif");
     background-position: center;
     background-size: cover;
     /*********/
