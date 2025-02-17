@@ -9,7 +9,7 @@ class Fireball{
         // 2. configurar propiedades iniciales
         this.x = positionX; //posicion eje horizontal
         this.y = 0; //posicion eje vertical
-        this.w = 150;
+        this.w = 85;
         this.h = 100;
 
         this.node.style.position = "absolute" //para poder ubicarlo dentro de la caja del juego
