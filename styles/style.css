@@ -64,3 +64,16 @@ body {
   #game-screen, #game-over-screen, #victory-screen{
     display: none;
   }
+
+  #beast-health {
+    width: 100%;
+    background-color: #ddd;
+    overflow: hidden;
+    margin-bottom: 5px;
+}
+
+#health-remaining {
+    height: 20px;
+    background-color: red;
+    width: 1300px;
+}

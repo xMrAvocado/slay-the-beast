@@ -20,6 +20,5 @@ class Beast {
         this.node.style.height = `${this.h}px`;
         
         // 3. añadir propiedades adicionales
-
     }
 }

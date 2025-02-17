@@ -18,7 +18,11 @@
         <!-- Elementos del juego como puntuación, vidas, etc deberia ir aqui (dentro del game-screen pero fuera del game-box) -->
         <div id="game-box">
           <!-- Los elementos del juego serán añadidos desde JS con manipulación de DOM -->
+          <div id="beast-health">
+            <div id="health-remaining"></div>
+          </div>
         </div>
+        
     </div>
 
     <!-- PANTALLA GAME OVER -->
@@ -28,7 +32,7 @@
     </div>
     <!-- PANTALLA VICTORIA -->
     <div id="victory-screen" class="container">
-        <img src="./images/logo.png" width="500" alt="victorylogo">
+        <img src="./images/gameend.png" width="500" alt="victorylogo">
     </div>
     <script src="./js/main.js"></script>
     <script src="./js/arquero.js"></script>

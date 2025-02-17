@@ -19,7 +19,7 @@ class Arquero {
         this.node.style.height = `${this.h}px`;
         
         // 3. añadir propiedades adicionales
-        this.walkSpeed = 5;
+        this.walkSpeed = 7;
 
         this.canShoot = true;
     }

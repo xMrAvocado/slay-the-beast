@@ -5,6 +5,8 @@ const splashScreenNode = document.querySelector("#splash-screen")
 const gameScreenNode = document.querySelector("#game-screen")
 const gameOverScreenNode = document.querySelector("#game-over-screen")
 const victoryScreenNode = document.querySelector("#victory-screen")
+let healthRemaining = document.querySelector("#health-remaining");
+
 
 // botones
 const startBtnNode = document.querySelector("#start-btn")
@@ -22,9 +24,14 @@ let arrowArray = [];
 
 let gameIntervalId = null;
 let fireballSpawnIntervalId = null;
+
+let HitCounter = 0;
+
 //* FUNCIONES GLOBALES DEL JUEGO
 
 function startGame(){
+    HitCounter = 1;
+    healthRemaining.style.width = `1300px`
     // 1. ocultar la pantalla inicial
     splashScreenNode.style.display = "none";
     // 2. mostrar pantalla del juego
@@ -47,7 +54,7 @@ function startGame(){
     fireballSpawnIntervalId = setInterval(()=>{
         console.log("fireball")
         fireballSpawn();
-    }, 1000)
+    }, 1500)
 }
 
 function gameLoop(){
@@ -121,6 +128,15 @@ function gameEnd(){
     })
     arrowArray= [];
 
+}
+
+function healthBeast(){
+    healthRemaining.style.width = `${1300 - HitCounter * 100}px`;
+    HitCounter ++;
+    console.log("Hitcounter", HitCounter);
+    if (healthRemaining.style.width === `0px`){
+        gameEnd();
+    }
 }
 
 /*FIREBALL SPAWN, DESPAWN AND COLLISION*/
@@ -202,7 +218,7 @@ function checkColisionArrowBeast(){
             eachArrowObj.h + eachArrowObj.y > beastObj.y
           ) {
             // ¡colisión detectada!
-            gameEnd();
+            healthBeast();
           }
 
     })
