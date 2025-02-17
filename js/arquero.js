@@ -20,6 +20,8 @@ class Arquero {
         
         // 3. añadir propiedades adicionales
         this.walkSpeed = 5;
+
+        this.canShoot = true;
     }
 
     //metodos del arquero

@@ -9,7 +9,7 @@ class Beast {
         // 2. configurar propiedades iniciales
         this.w = 520;
         this.h = 700;
-        this.x = gameBoxNode.offsetHeight; //posicion eje horizontal
+        this.x = 80 + gameBoxNode.offsetHeight; //posicion eje horizontal
         this.y = 0; //posicion eje vertical
         
 
