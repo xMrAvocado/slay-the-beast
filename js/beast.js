@@ -3,14 +3,17 @@ class Beast {
 
         // 1. Crear el nodo y añadirlo a la caja del juego
         this.node = document.createElement("img"); // creamos nodo del pollito <img/>
-        this.node.src = "./images/beast.png" // Añadimos el src a la imagen // La llamada se hace desde el index, por eso se pone un solo "."
+        this.arrayDragon = ["./images/dragon0.png", "./images/dragon1.png", "./images/dragon2.png"];
+        this.arrayDragon.forEach((eachDragon)=>{
+            this.node.src = eachDragon; // Añadimos el src a la imagen // La llamada se hace desde el index, por eso se pone un solo "."
+        })
         gameBoxNode.append(this.node); //añadimos el nodo a la caja del juego
 
         // 2. configurar propiedades iniciales
-        this.w = 520;
-        this.h = 700;
+        this.w = 800;
+        this.h = 400;
         this.x = 80 + gameBoxNode.offsetHeight; //posicion eje horizontal
-        this.y = 0; //posicion eje vertical
+        this.y = 315; //posicion eje vertical
         
 
         this.node.style.position = "absolute" //para poder ubicarlo dentro de la caja del juego

@@ -27,9 +27,19 @@ let fireballSpawnIntervalId = null;
 
 let HitCounter = 0;
 
+/*SOUNDS*/ 
+let Hitsnd = new Audio("../sounds/hit.wav");
+let Arrowsnd = new Audio("../sounds/arrow_attack.wav");
+let GameOversnd = new Audio("../sounds/game_over.mp3");
+let StartButtonsnd = new Audio("../sounds/start_sound.flac");
+let DeadBeastsnd = new Audio("../sounds/dead_beast.flac");
+
+
 //* FUNCIONES GLOBALES DEL JUEGO
 
 function startGame(){
+    GameOversnd.pause();
+    StartButtonsnd.play();
     HitCounter = 1;
     healthRemaining.style.width = `1300px`
     // 1. ocultar la pantalla inicial
@@ -76,6 +86,8 @@ function gameLoop(){
 function gameOver(){
     console.log("Game Over");
     
+    GameOversnd.play();
+
     // 1. Detener todos los intervalos de juego
     clearInterval(gameIntervalId);
     clearInterval(fireballSpawnIntervalId);
@@ -135,6 +147,7 @@ function healthBeast(){
     HitCounter ++;
     console.log("Hitcounter", HitCounter);
     if (healthRemaining.style.width === `0px`){
+        DeadBeastsnd.play();
         gameEnd();
     }
 }
@@ -188,6 +201,8 @@ window.addEventListener("keydown",(event)=>{
 
         arqueroObj.canShoot = false;
 
+        Arrowsnd.play();
+
         setTimeout(()=>{
             arqueroObj.canShoot = true;
          }, 1000)
@@ -219,6 +234,8 @@ function checkColisionArrowBeast(){
           ) {
             // ¡colisión detectada!
             healthBeast();
+            
+            Hitsnd.play();
           }
 
     })
