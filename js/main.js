@@ -27,16 +27,27 @@ let fireballSpawnIntervalId = null;
 
 let HitCounter = 0;
 
+
+
+
+
 /*SOUNDS*/ 
 let Hitsnd = new Audio("../sounds/hit.wav");
+Hitsnd.volume = 0.05;
 let Arrowsnd = new Audio("../sounds/arrow_attack.wav");
+Arrowsnd.volume = 0.05;
 let GameOversnd = new Audio("../sounds/game_over.mp3");
+GameOversnd.volume = 0.05;
 let StartButtonsnd = new Audio("../sounds/start_sound.flac");
+StartButtonsnd.volume = 0.05;
 let DeadBeastsnd = new Audio("../sounds/dead_beast.flac");
+DeadBeastsnd.volume = 0.05;
 let Ouchsnd = new Audio("../sounds/ouch_damage.flac");
+Ouchsnd.volume = 0.05;
 let Combatsnd = new Audio("../sounds/combat_music.mp3");
+Combatsnd.volume = 0.05;
 let Endingsnd = new Audio("../sounds/ending.wav");
-
+Endingsnd.volume = 0.05;
 
 //* FUNCIONES GLOBALES DEL JUEGO
 
@@ -87,8 +98,14 @@ function gameLoop(){
     fireballDespawn();
     checkColisionArcherFireball();
 
-    arrowDespawn();
+    //arrowDespawn();
     checkColisionArrowBeast();
+
+    arqueroObj.walkRigth();
+    arqueroObj.walkLeft();
+    arqueroObj.jumpEffect();
+
+    //colisionArquero()
 }
 
 function gameOver(){
@@ -202,8 +219,8 @@ function checkColisionArcherFireball(){
         if (
             eachFireballObj.x < arqueroObj.x + arqueroObj.w &&
             eachFireballObj.x + eachFireballObj.w > arqueroObj.x &&
-            eachFireballObj.y < arqueroObj.y + arqueroObj.h &&
-            eachFireballObj.h + eachFireballObj.y > arqueroObj.y
+            eachFireballObj.y -30 < arqueroObj.y + arqueroObj.h &&
+            eachFireballObj.h + eachFireballObj.y - 30 > arqueroObj.y
           ) {
             // ¡colisión detectada!
             Ouchsnd.play();
@@ -233,7 +250,7 @@ window.addEventListener("keydown",(event)=>{
     }
 })
 
-function arrowDespawn(){
+/*function arrowDespawn(){
     if (arrowArray.length > 0 && arrowArray[0].x > ((920) - arrowArray[0].w)){
         // 1. Si el array tiene tuberias
         // 2. si la x de la primera tuberia ha salido de la caja de juego
@@ -245,7 +262,7 @@ function arrowDespawn(){
         // 2. Removerlo del JS (Array)
         arrowArray.shift();
     }
-}
+}*/
 
 function checkColisionArrowBeast(){
     arrowArray.forEach((eachArrowObj)=>{
@@ -257,6 +274,11 @@ function checkColisionArrowBeast(){
             eachArrowObj.h + eachArrowObj.y > beastObj.y
           ) {
             // ¡colisión detectada!
+            // 1. Remover el Nodo
+            arrowArray[0].node.remove();
+            // 2. Removerlo del JS (Array)
+            arrowArray.shift();
+            /*En caso de que la flecha pudiera fallar, hay que cambiar el código de remover el nodo*/ 
             healthBeast();
             damageDragon();
             Hitsnd.play();
@@ -266,41 +288,50 @@ function checkColisionArrowBeast(){
 }
 /*******************************************************************/
 
+/*ARQUERO*/
+/*function colisionArquero(){
+    if((arqueroObj.x + arqueroObj.w) >= (gameBoxNode.offsetWidth - 600)){
+        arqueroObj.isWalkingRight = false;
+    }else if ((arqueroObj.x + arqueroObj.w) <= arqueroObj.w) {
+        arqueroObj.isWalkingLeft = false;
+    }else if (arqueroObj.y >= 0) {
+        arqueroObj.isJumping = false;
+    }
+}
+/*******************/
+
 
 //* EVENT LISTENERS
 startBtnNode.addEventListener("click", ()=>{
     startGame();
-    Combatsnd.volume = 0.45;
     Combatsnd.play();
 });
 
 restartBtnNode.addEventListener("click", ()=>{
     startGame();
-    Combatsnd.volume = 0.45;
     Combatsnd.play();
 });
 
 window.addEventListener("keydown",(event)=>{
     if (event.code === "KeyD"){
-        arqueroObj.walkRigth();
-    }
-})
-
-window.addEventListener("keydown",(event)=>{
-    if (event.code === "KeyA"){
-        arqueroObj.walkLeft();
-    }
-})
-
-window.addEventListener("keydown",(event)=>{
-    if (event.code === "Space"  && arqueroObj.canJump === true){
-        arqueroObj.jumpEffect();
-
+        arqueroObj.isWalkingRight = true;
+    }else if (event.code === "KeyA"){
+        arqueroObj.isWalkingLeft = true;
+    }else if (event.code === "Space"  && arqueroObj.canJump === true && (arqueroObj.y + arqueroObj.h) >= (gameBoxNode.offsetHeight - 20)){
+        arqueroObj.isJumping = true;
         arqueroObj.canJump = false;
-
         setTimeout(()=>{
+            arqueroObj.isJumping = false;
             arqueroObj.canJump = true;
-         }, 800)
+         }, 500)
         
+    }
+})
+
+window.addEventListener("keyup",(event)=>{
+    if (event.code === "KeyD"){
+        arqueroObj.isWalkingRight = false;
+    }else if (event.code === "KeyA"){
+        arqueroObj.isWalkingLeft = false;
     }
 })

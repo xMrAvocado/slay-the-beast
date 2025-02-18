@@ -19,7 +19,7 @@ class Arrow{
         this.node.style.height = `${this.h}px`;
         
         // 3. añadir propiedades adicionales
-        this.movementSpeed = 10;//ayuda a que el entorno de juego sepa que tipo de objetos estoy creando.
+        this.movementSpeed = 12;//ayuda a que el entorno de juego sepa que tipo de objetos estoy creando.
     }
 
     automaticMovement(){
