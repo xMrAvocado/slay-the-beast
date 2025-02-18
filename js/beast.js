@@ -3,11 +3,18 @@ class Beast {
 
         // 1. Crear el nodo y añadirlo a la caja del juego
         this.node = document.createElement("img"); // creamos nodo del pollito <img/>
-        this.arrayDragon = ["./images/dragon0.png", "./images/dragon1.png", "./images/dragon2.png"];
-        this.arrayDragon.forEach((eachDragon)=>{
-            this.node.src = eachDragon; // Añadimos el src a la imagen // La llamada se hace desde el index, por eso se pone un solo "."
-        })
-        gameBoxNode.append(this.node); //añadimos el nodo a la caja del juego
+        this.arrayDragon = ["./images/Dragon/dragon0.png", "./images/Dragon/dragon1.png", "./images/Dragon/dragon2.png", "./images/Dragon/dragon1.png"];
+        gameBoxNode.append(this.node);
+        this.node.src = this.arrayDragon[0];
+        let counter = 1;
+        this.intervalBeast = setInterval(()=>{
+            this.node.src = this.arrayDragon[counter]; // Añadimos el src a la imagen // La llamada se hace desde el index, por eso se pone un solo "."
+            counter ++;
+            if (counter > this.arrayDragon.length - 1){
+                counter = 0;
+            }
+            //console.log("Intervalo Dragon");
+        }, 500);
 
         // 2. configurar propiedades iniciales
         this.w = 800;

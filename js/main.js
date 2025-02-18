@@ -33,12 +33,19 @@ let Arrowsnd = new Audio("../sounds/arrow_attack.wav");
 let GameOversnd = new Audio("../sounds/game_over.mp3");
 let StartButtonsnd = new Audio("../sounds/start_sound.flac");
 let DeadBeastsnd = new Audio("../sounds/dead_beast.flac");
+let Ouchsnd = new Audio("../sounds/ouch_damage.flac");
+let Combatsnd = new Audio("../sounds/combat_music.mp3");
+let Endingsnd = new Audio("../sounds/ending.wav");
 
 
 //* FUNCIONES GLOBALES DEL JUEGO
 
 function startGame(){
-    GameOversnd.pause();
+    GameOversnd.pause(); //Se pausa la música de fin del juego.
+    GameOversnd.currentTime = 0; // La musica de fin del juego empieza de 0 siempre.
+
+    Combatsnd.currentTime = 0;
+
     StartButtonsnd.play();
     HitCounter = 1;
     healthRemaining.style.width = `1300px`
@@ -76,6 +83,7 @@ function gameLoop(){
         eachArrowObj.automaticMovement();
     })
 
+    arqueroObj.gravityEffect();
     fireballDespawn();
     checkColisionArcherFireball();
 
@@ -87,8 +95,10 @@ function gameOver(){
     console.log("Game Over");
     
     GameOversnd.play();
+    Combatsnd.pause();
 
     // 1. Detener todos los intervalos de juego
+    clearInterval(beastObj.intervalBeast); //Detener animacion del dragon
     clearInterval(gameIntervalId);
     clearInterval(fireballSpawnIntervalId);
     // 2. Ocultar la pantalla de juego
@@ -115,8 +125,13 @@ function gameOver(){
 
 function gameEnd(){
     console.log("Victory");
-    
+
+    Endingsnd.play();
+    Combatsnd.pause();
+
+
     // 1. Detener todos los intervalos de juego
+    clearInterval(beastObj.intervalBeast); //Detener animacion del dragon
     clearInterval(gameIntervalId);
     clearInterval(fireballSpawnIntervalId);
     // 2. Ocultar la pantalla de juego
@@ -152,6 +167,13 @@ function healthBeast(){
     }
 }
 
+function damageDragon(){
+    beastObj.node.style.display = "none";
+    setTimeout(()=>{
+        beastObj.node.style.display = "block";
+    }, 50)
+}
+
 /*FIREBALL SPAWN, DESPAWN AND COLLISION*/
 function fireballSpawn(){
     let randomPositionX = Math.floor(Math.random() * 600);
@@ -184,6 +206,7 @@ function checkColisionArcherFireball(){
             eachFireballObj.h + eachFireballObj.y > arqueroObj.y
           ) {
             // ¡colisión detectada!
+            Ouchsnd.play();
             gameOver();
           }
 
@@ -193,15 +216,16 @@ function checkColisionArcherFireball(){
 
 /*ARROW SPAWN, DESPAWN AND COLLISION*/
 window.addEventListener("keydown",(event)=>{
-    if (event.code === "Space" && arqueroObj.canShoot === true){
+    if (event.code === "KeyK" && arqueroObj.canShoot === true){
         let positionX = arqueroObj.x;
-        let arrowObj = new Arrow(positionX);
+        let positionY = arqueroObj.y;
+        let arrowObj = new Arrow(positionX, positionY);
         arrowArray.push(arrowObj);
         console.log(arrowArray.length);
 
-        arqueroObj.canShoot = false;
-
         Arrowsnd.play();
+
+        arqueroObj.canShoot = false;
 
         setTimeout(()=>{
             arqueroObj.canShoot = true;
@@ -234,7 +258,7 @@ function checkColisionArrowBeast(){
           ) {
             // ¡colisión detectada!
             healthBeast();
-            
+            damageDragon();
             Hitsnd.play();
           }
 
@@ -246,10 +270,14 @@ function checkColisionArrowBeast(){
 //* EVENT LISTENERS
 startBtnNode.addEventListener("click", ()=>{
     startGame();
+    Combatsnd.volume = 0.45;
+    Combatsnd.play();
 });
 
 restartBtnNode.addEventListener("click", ()=>{
     startGame();
+    Combatsnd.volume = 0.45;
+    Combatsnd.play();
 });
 
 window.addEventListener("keydown",(event)=>{
@@ -261,5 +289,18 @@ window.addEventListener("keydown",(event)=>{
 window.addEventListener("keydown",(event)=>{
     if (event.code === "KeyA"){
         arqueroObj.walkLeft();
+    }
+})
+
+window.addEventListener("keydown",(event)=>{
+    if (event.code === "Space"  && arqueroObj.canJump === true){
+        arqueroObj.jumpEffect();
+
+        arqueroObj.canJump = false;
+
+        setTimeout(()=>{
+            arqueroObj.canJump = true;
+         }, 800)
+        
     }
 })

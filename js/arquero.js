@@ -20,8 +20,10 @@ class Arquero {
         
         // 3. añadir propiedades adicionales
         this.walkSpeed = 7;
-
+        this.jumpSpeed = 175;
+        this.gravitySpeed = 4;
         this.canShoot = true;
+        this.canJump = true;
     }
 
     //metodos del arquero
@@ -37,6 +39,21 @@ class Arquero {
         if((this.x + this.w) >= this.w){
             this.x -= this.walkSpeed;
             this.node.style.left = `${this.x}px`;
+        }
+    }
+
+    jumpEffect(){
+        if(this.y >= 0){
+            this.y -= this.jumpSpeed;
+            this.node.style.top = `${this.y}px`;
+        }
+        
+    }
+
+    gravityEffect(){
+        if((this.y + this.h)<= gameBoxNode.offsetHeight){
+            this.y += this.gravitySpeed;
+            this.node.style.top = `${this.y}px`;
         }
     }
 }

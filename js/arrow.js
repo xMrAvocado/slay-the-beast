@@ -1,5 +1,5 @@
 class Arrow{
-    constructor(positionX){
+    constructor(positionX, positionY){
         // 1. Crear el nodo y añadirlo a la caja del juego
         this.node = document.createElement("img");
         this.node.src = "./images/player-projectile.png";
@@ -8,7 +8,7 @@ class Arrow{
 
         // 2. configurar propiedades iniciales
         this.x = positionX; //posicion eje horizontal
-        this.y = 620; //posicion eje vertical
+        this.y = positionY; //posicion eje vertical
         this.w = 50;
         this.h = 50;
 
