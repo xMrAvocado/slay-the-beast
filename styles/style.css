@@ -69,7 +69,9 @@ body {
     width: 100%;
     background-color: #ddd;
     overflow: hidden;
-    margin-bottom: 5px;
+    border-bottom-style: solid;
+    border-bottom-width: 20px;
+    border-bottom-color: black;
 }
 
 #health-remaining {

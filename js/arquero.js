@@ -3,14 +3,15 @@ class Arquero {
 
         // 1. Crear el nodo y añadirlo a la caja del juego
         this.node = document.createElement("img"); // creamos nodo del arquero <img/>
-        this.node.src = "./images/archer.png" // Añadimos el src a la imagen // La llamada se hace desde el index, por eso se pone un solo "."
+        this.node.src = "./images/Archer/Attack1.png" // Añadimos el src a la imagen // La llamada se hace desde el index, por eso se pone un solo "."
         gameBoxNode.append(this.node); //añadimos el nodo a la caja del juego
 
+
         // 2. configurar propiedades iniciales
-        this.w = 100;
-        this.h = 100;
+        this.w = 81;
+        this.h = 123;
         this.x = 60; //posicion eje horizontal
-        this.y = gameBoxNode.offsetHeight - this.w; //posicion eje vertical
+        this.y = gameBoxNode.offsetHeight - this.h; //posicion eje vertical
         
         this.node.style.position = "absolute" //para poder ubicarlo dentro de la caja del juego
         this.node.style.left = `${this.x}px`;

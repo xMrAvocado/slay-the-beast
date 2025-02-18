@@ -200,7 +200,7 @@ function fireballSpawn(){
 }
 
 function fireballDespawn(){
-    if (fireballArray.length > 0 && fireballArray[0].y > (700 + fireballArray[0].h)){
+    if (fireballArray.length > 0 && fireballArray[0].y > (gameBoxNode.offsetHeight - fireballArray[0].h)){
         // 1. Si el array tiene tuberias
         // 2. si la x de la primera tuberia ha salido de la caja de juego
 
@@ -217,7 +217,7 @@ function checkColisionArcherFireball(){
     fireballArray.forEach((eachFireballObj)=>{
 
         if (
-            eachFireballObj.x < arqueroObj.x + arqueroObj.w &&
+            eachFireballObj.x < (arqueroObj.x + arqueroObj.w - 30) &&
             eachFireballObj.x + eachFireballObj.w > arqueroObj.x &&
             eachFireballObj.y -30 < arqueroObj.y + arqueroObj.h &&
             eachFireballObj.h + eachFireballObj.y - 30 > arqueroObj.y
@@ -234,6 +234,24 @@ function checkColisionArcherFireball(){
 /*ARROW SPAWN, DESPAWN AND COLLISION*/
 window.addEventListener("keydown",(event)=>{
     if (event.code === "KeyK" && arqueroObj.canShoot === true){
+
+        /*ANIMACION ATAQUE*/
+        arqueroObj.arrayArcher = ["./images/Archer/Attack3.PNG", "./images/Archer/Attack1.PNG"];
+        gameBoxNode.append(arqueroObj.node);
+        arqueroObj.node.src = arqueroObj.arrayArcher[0];
+        let counter = 1;
+        arqueroObj.intervalArcher = setInterval(()=>{
+            arqueroObj.node.src = arqueroObj.arrayArcher[counter]; // Añadimos el src a la imagen // La llamada se hace desde el index, por eso se pone un solo "."
+            counter ++;
+            if (counter > arqueroObj.arrayArcher.length - 1){
+                counter = 0;
+            }
+            console.log("Intervalo Arquero");
+        }, 380);
+        setTimeout(()=>{
+            clearInterval(arqueroObj.intervalArcher);
+         }, 380);
+        /************************************************/
         let positionX = arqueroObj.x;
         let positionY = arqueroObj.y;
         let arrowObj = new Arrow(positionX, positionY);
@@ -262,7 +280,7 @@ window.addEventListener("keydown",(event)=>{
         // 2. Removerlo del JS (Array)
         arrowArray.shift();
     }
-}*/
+}*/ //Código hecho antes del cambio hecho en la funcion checkColisionArrowBeast()
 
 function checkColisionArrowBeast(){
     arrowArray.forEach((eachArrowObj)=>{
@@ -320,6 +338,7 @@ window.addEventListener("keydown",(event)=>{
     }else if (event.code === "Space"  && arqueroObj.canJump === true && (arqueroObj.y + arqueroObj.h) >= (gameBoxNode.offsetHeight - 20)){
         arqueroObj.isJumping = true;
         arqueroObj.canJump = false;
+
         setTimeout(()=>{
             arqueroObj.isJumping = false;
             arqueroObj.canJump = true;
