@@ -51,7 +51,7 @@ body {
     background-image: url("../images/FondoJuego.gif");
     background-position: center;
     background-size: cover;
-    margin: 150px;
+    /*margin: 150px;*/
     /*********/
   }
   
@@ -64,9 +64,9 @@ body {
     display: none;
   }
 
-  #game-over-screen, #victory-screen{
+  /*#game-over-screen, #victory-screen{
     margin: 200px;
-  }
+  }*/
 
   #beast-health {
     width: 100%;
