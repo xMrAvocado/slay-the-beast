@@ -1,14 +1,13 @@
 body {
     margin: 0;
-    background-color: black;
+    background-color: #00bf63;
   }
   
   #start-btn {
-    background-color: #00bf63;
+    background-color: black;
     color: white;
     padding: 20px;
     font-size: 40px;
-    margin-top: 40px;
     border-radius: 10px;
     font-weight: bolder;
   }
@@ -19,7 +18,7 @@ body {
   }
 
   #restart-btn {
-    background-color: #00bf63;
+    background-color: black;
     color: white;
     padding: 20px;
     font-size: 40px;
@@ -38,7 +37,6 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin: 50px;
   }
   
   #game-box {
@@ -53,6 +51,7 @@ body {
     background-image: url("../images/FondoJuego.gif");
     background-position: center;
     background-size: cover;
+    margin: 150px;
     /*********/
   }
   
@@ -65,17 +64,21 @@ body {
     display: none;
   }
 
+  #game-over-screen, #victory-screen{
+    margin: 200px;
+  }
+
   #beast-health {
     width: 100%;
     background-color: #ddd;
     overflow: hidden;
     border-bottom-style: solid;
     border-bottom-width: 20px;
-    border-bottom-color: black;
+    border-bottom-color: #00bf63;
 }
 
 #health-remaining {
-    height: 20px;
+    height: 30px;
     background-color: red;
     width: 1300px;
 }

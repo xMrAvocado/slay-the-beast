@@ -28,9 +28,6 @@ let fireballSpawnIntervalId = null;
 let HitCounter = 0;
 
 
-
-
-
 /*SOUNDS*/ 
 let Hitsnd = new Audio("./sounds/hit.wav");
 Hitsnd.volume = 0.05;
@@ -48,6 +45,8 @@ let Combatsnd = new Audio("./sounds/combat_music.mp3");
 Combatsnd.volume = 0.05;
 let Endingsnd = new Audio("./sounds/ending.wav");
 Endingsnd.volume = 0.05;
+/**************************************************/
+
 
 //* FUNCIONES GLOBALES DEL JUEGO
 
@@ -55,9 +54,9 @@ function startGame(){
     GameOversnd.pause(); //Se pausa la música de fin del juego.
     GameOversnd.currentTime = 0; // La musica de fin del juego empieza de 0 siempre.
 
-    Combatsnd.currentTime = 0;
+    Combatsnd.currentTime = 0; //La musica de combate empieza de 0 siempre.
 
-    StartButtonsnd.play();
+    StartButtonsnd.play(); //Sonido de click del botón
     HitCounter = 1;
     healthRemaining.style.width = `1300px`
     // 1. ocultar la pantalla inicial
@@ -121,7 +120,7 @@ function gameOver(){
     // 2. Ocultar la pantalla de juego
     gameScreenNode.style.display = "none";
     
-    // 3. Mostrar la pantalla final
+    // 3. Mostrar la pantalla game over
     gameOverScreenNode.style.display = "flex";
     
     arqueroObj.node.remove();
@@ -173,9 +172,9 @@ function gameEnd(){
     arrowArray= [];
 
 }
-
+/*VIDA Y DAÑO DEL DRAGÓN*/
 function healthBeast(){
-    healthRemaining.style.width = `${1300 - HitCounter * 100}px`;
+    healthRemaining.style.width = `${1300 - HitCounter * 50}px`;
     HitCounter ++;
     console.log("Hitcounter", HitCounter);
     if (healthRemaining.style.width === `0px`){
@@ -190,6 +189,7 @@ function damageDragon(){
         beastObj.node.style.display = "block";
     }, 50)
 }
+/*********************************************/
 
 /*FIREBALL SPAWN, DESPAWN AND COLLISION*/
 function fireballSpawn(){
@@ -201,10 +201,6 @@ function fireballSpawn(){
 
 function fireballDespawn(){
     if (fireballArray.length > 0 && fireballArray[0].y > (gameBoxNode.offsetHeight - fireballArray[0].h)){
-        // 1. Si el array tiene tuberias
-        // 2. si la x de la primera tuberia ha salido de la caja de juego
-
-        // Para remover objetos del juego hay que considerar dos cosas:
 
         // 1. Remover el Nodo
         fireballArray[0].node.remove();
@@ -241,7 +237,7 @@ window.addEventListener("keydown",(event)=>{
         arqueroObj.node.src = arqueroObj.arrayArcher[0];
         let counter = 1;
         arqueroObj.intervalArcher = setInterval(()=>{
-            arqueroObj.node.src = arqueroObj.arrayArcher[counter]; // Añadimos el src a la imagen // La llamada se hace desde el index, por eso se pone un solo "."
+            arqueroObj.node.src = arqueroObj.arrayArcher[counter]; // La llamada se hace desde el index, por eso se pone un solo "."
             counter ++;
             if (counter > arqueroObj.arrayArcher.length - 1){
                 counter = 0;
@@ -252,6 +248,7 @@ window.addEventListener("keydown",(event)=>{
             clearInterval(arqueroObj.intervalArcher);
          }, 380);
         /************************************************/
+
         let positionX = arqueroObj.x;
         let positionY = arqueroObj.y;
         let arrowObj = new Arrow(positionX, positionY);
