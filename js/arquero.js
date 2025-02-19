@@ -21,7 +21,7 @@ class Arquero {
         
         // 3. añadir propiedades adicionales
         this.walkSpeed = 5;
-        this.jumpSpeed = 10;
+        this.jumpSpeed = 11;
         this.gravitySpeed = 5;
         this.canShoot = true;
         this.canJump = true;

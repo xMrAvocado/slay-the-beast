@@ -21,12 +21,15 @@ let beastObj = null;
 
 let fireballArray = [];
 let arrowArray = [];
+let spikeArray = [];
 
 let gameIntervalId = null;
 let fireballSpawnIntervalId = null;
+let spikeSpawnIntervalId = null;
+let spikeSpawnTimeoutId = null;
 
-let HitCounter = 0;
-
+//let HitCounter = 0;
+let actualHealth = 1300;
 
 /*SOUNDS*/ 
 let Hitsnd = new Audio("./sounds/hit.wav");
@@ -45,19 +48,25 @@ let Combatsnd = new Audio("./sounds/combat_music.mp3");
 Combatsnd.volume = 0.05;
 let Endingsnd = new Audio("./sounds/ending.wav");
 Endingsnd.volume = 0.05;
+let Spikesnd = new Audio("./sounds/spike_spawn.wav");
+Spikesnd.volume = 0.05;
+let SpikeWarningsnd = new Audio("./sounds/spike_warning.wav");
+SpikeWarningsnd.volume = 0.05;
 /**************************************************/
 
 
 //* FUNCIONES GLOBALES DEL JUEGO
 
 function startGame(){
+    actualHealth = 1300;
+    healthRemaining.style.backgroundColor = `red`;
     GameOversnd.pause(); //Se pausa la música de fin del juego.
     GameOversnd.currentTime = 0; // La musica de fin del juego empieza de 0 siempre.
 
     Combatsnd.currentTime = 0; //La musica de combate empieza de 0 siempre.
 
     StartButtonsnd.play(); //Sonido de click del botón
-    HitCounter = 1;
+    //HitCounter = 1;
     healthRemaining.style.width = `1300px`
     // 1. ocultar la pantalla inicial
     splashScreenNode.style.display = "none";
@@ -81,12 +90,17 @@ function startGame(){
     fireballSpawnIntervalId = setInterval(()=>{
         console.log("fireball")
         fireballSpawn();
-    }, 500)
+    }, 770)
+    
 }
 
 function gameLoop(){
     fireballArray.forEach((eachFireballObj)=>{
         eachFireballObj.automaticMovement();
+    })
+
+    spikeArray.forEach((eachSpikeObj)=>{
+        eachSpikeObj.automaticMovement();
     })
 
     arrowArray.forEach((eachArrowObj)=>{
@@ -99,6 +113,10 @@ function gameLoop(){
 
     //arrowDespawn();
     checkColisionArrowBeast();
+
+    
+    checkColisionArcherSpike();
+    spikeDespawn();
 
     arqueroObj.walkRigth();
     arqueroObj.walkLeft();
@@ -117,6 +135,8 @@ function gameOver(){
     clearInterval(beastObj.intervalBeast); //Detener animacion del dragon
     clearInterval(gameIntervalId);
     clearInterval(fireballSpawnIntervalId);
+    clearTimeout(spikeSpawnTimeoutId);
+    clearInterval(spikeSpawnIntervalId);
     // 2. Ocultar la pantalla de juego
     gameScreenNode.style.display = "none";
     
@@ -137,6 +157,10 @@ function gameOver(){
         eachArrow.node.remove();
     })
     arrowArray= [];
+    spikeArray.forEach((eachSpike)=>{
+        eachSpike.node.remove();
+    })
+    spikeArray = [];
 }
 
 function gameEnd(){
@@ -150,6 +174,8 @@ function gameEnd(){
     clearInterval(beastObj.intervalBeast); //Detener animacion del dragon
     clearInterval(gameIntervalId);
     clearInterval(fireballSpawnIntervalId);
+    clearTimeout(spikeSpawnTimeoutId);
+    clearInterval(spikeSpawnIntervalId);
     // 2. Ocultar la pantalla de juego
     gameScreenNode.style.display = "none";
     
@@ -170,16 +196,32 @@ function gameEnd(){
         eachArrow.node.remove();
     })
     arrowArray= [];
+    spikeArray.forEach((eachSpike)=>{
+        eachSpike.node.remove();
+    })
+    spikeArray = [];
 
 }
 /*VIDA Y DAÑO DEL DRAGÓN*/
 function healthBeast(){
-    healthRemaining.style.width = `${1300 - HitCounter * 50}px`;
-    HitCounter ++;
-    console.log("Hitcounter", HitCounter);
+    actualHealth = actualHealth - 50;
+    healthRemaining.style.width = `${actualHealth}px`;
+    
+    //console.log("Hitcounter", HitCounter);
     if (healthRemaining.style.width === `0px`){
         DeadBeastsnd.play();
         gameEnd();
+    } else if(actualHealth <= 850 && beastObj.isSecondPhase === false){
+        beastObj.isSecondPhase = true;
+        healthRemaining.style.backgroundColor = `#ff5c00`;
+        DeadBeastsnd.play();
+        spikeSpawnIntervalId = setInterval(()=>{
+            SpikeWarningsnd.play();
+            spikeSpawnTimeoutId = setTimeout(()=>{
+                spikeSpawn();
+            }, 800)    
+        }, 3000)
+        
     }
 }
 
@@ -217,6 +259,44 @@ function checkColisionArcherFireball(){
             eachFireballObj.x + eachFireballObj.w > arqueroObj.x &&
             eachFireballObj.y -30 < arqueroObj.y + arqueroObj.h &&
             eachFireballObj.h + eachFireballObj.y - 30 > arqueroObj.y
+          ) {
+            // ¡colisión detectada!
+            Ouchsnd.play();
+            gameOver();
+          }
+
+    })
+}
+/*******************************************************************/
+
+/*SPIKE SPAWN, DESPAWN AND COLLISION*/
+function spikeSpawn(){
+        Spikesnd.play();
+        let spikeObj = new Spike(arqueroObj.x);
+        spikeArray.push(spikeObj);
+        console.log(spikeArray.length);
+    
+}
+
+function spikeDespawn(){
+    if (spikeArray.length > 0 && spikeArray[0].y > (gameBoxNode.offsetHeight + 50)){
+                // 1. Remover el Nodo
+        spikeArray[0].node.remove();
+        // 2. Removerlo del JS (Array)
+        spikeArray.shift();
+        
+        
+    }
+}
+
+function checkColisionArcherSpike(){
+    spikeArray.forEach((eachSpikeObj)=>{
+
+        if (
+            eachSpikeObj.x < (arqueroObj.x + arqueroObj.w - 30) &&
+            eachSpikeObj.x + eachSpikeObj.w > arqueroObj.x &&
+            eachSpikeObj.y -30 < arqueroObj.y + arqueroObj.h &&
+            eachSpikeObj.h + eachSpikeObj.y - 30 > arqueroObj.y
           ) {
             // ¡colisión detectada!
             Ouchsnd.play();
@@ -314,7 +394,6 @@ function checkColisionArrowBeast(){
     }
 }
 /*******************/
-
 
 //* EVENT LISTENERS
 startBtnNode.addEventListener("click", ()=>{
