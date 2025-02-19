@@ -2,7 +2,7 @@ class Beast {
     constructor(){
 
         // 1. Crear el nodo y añadirlo a la caja del juego
-        this.node = document.createElement("img"); // creamos nodo del pollito <img/>
+        this.node = document.createElement("img");
         this.arrayDragon = ["./images/Dragon/dragon0.PNG", "./images/Dragon/dragon1.PNG", "./images/Dragon/dragon2.PNG", "./images/Dragon/dragon1.PNG"];
         gameBoxNode.append(this.node);
         this.node.src = this.arrayDragon[0];

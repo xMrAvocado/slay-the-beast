@@ -19,7 +19,7 @@ class Fireball{
         this.node.style.height = `${this.h}px`;
         
         // 3. añadir propiedades adicionales
-        this.movementSpeed = 5;//ayuda a que el entorno de juego sepa que tipo de objetos estoy creando.
+        this.movementSpeed = 5;
     }
 
     automaticMovement(){

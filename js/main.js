@@ -26,10 +26,9 @@ let spikeArray = [];
 let gameIntervalId = null;
 let fireballSpawnIntervalId = null;
 let spikeSpawnIntervalId = null;
-let spikeSpawnTimeoutId = null;
+let spikeSpawnTimeoutId = null; //Declarar los Interval y Timeout como variables globales.
 
-//let HitCounter = 0;
-let actualHealth = 1300;
+let actualHealth = 1300; //Vida con la que empieza el enemigo y después se irá restando.
 
 /*SOUNDS*/ 
 let Hitsnd = new Audio("./sounds/hit.wav");
@@ -83,12 +82,10 @@ function startGame(){
 
     // 4. iniciar intervalo principal del juego
     gameIntervalId = setInterval(()=>{
-        //console.log("loop")
         gameLoop();
     }, Math.round(1000/60));
     // 5. iniciaremos otros intervalos adicionales
     fireballSpawnIntervalId = setInterval(()=>{
-        console.log("fireball")
         fireballSpawn();
     }, 790)
     
@@ -108,28 +105,24 @@ function gameLoop(){
     })
 
     arqueroObj.gravityEffect();
+
     fireballDespawn();
-    checkColisionArcherFireball();
+    checkColisionArcherFireball(); //Despawn y colision de cada bola de fuego
 
-    //arrowDespawn();
-    checkColisionArrowBeast();
-
+    checkColisionArrowBeast(); //Colision de cada flecha
     
-    checkColisionArcherSpike();
+    checkColisionArcherSpike(); //Despawn y colision del pincho
     spikeDespawn();
 
     arqueroObj.walkRigth();
     arqueroObj.walkLeft();
-    arqueroObj.jumpEffect();
-
-    //colisionArquero()
+    arqueroObj.jumpEffect(); //Efectos de movimiento del jugador
 }
 
 function gameOver(){
-    console.log("Game Over");
     
     GameOversnd.play();
-    Combatsnd.pause();
+    Combatsnd.pause(); // Musica del game over
 
     // 1. Detener todos los intervalos de juego
     clearInterval(beastObj.intervalBeast); //Detener animacion del dragon
@@ -137,6 +130,7 @@ function gameOver(){
     clearInterval(fireballSpawnIntervalId);
     clearTimeout(spikeSpawnTimeoutId);
     clearInterval(spikeSpawnIntervalId);
+
     // 2. Ocultar la pantalla de juego
     gameScreenNode.style.display = "none";
     
@@ -160,14 +154,13 @@ function gameOver(){
     spikeArray.forEach((eachSpike)=>{
         eachSpike.node.remove();
     })
-    spikeArray = [];
+    spikeArray = []; //Limpiar todos los objetos y nodos
 }
 
 function gameEnd(){
-    console.log("Victory");
 
     Endingsnd.play();
-    Combatsnd.pause();
+    Combatsnd.pause(); //Musica de victoria
 
 
     // 1. Detener todos los intervalos de juego
@@ -176,6 +169,7 @@ function gameEnd(){
     clearInterval(fireballSpawnIntervalId);
     clearTimeout(spikeSpawnTimeoutId);
     clearInterval(spikeSpawnIntervalId);
+
     // 2. Ocultar la pantalla de juego
     gameScreenNode.style.display = "none";
     
@@ -199,18 +193,17 @@ function gameEnd(){
     spikeArray.forEach((eachSpike)=>{
         eachSpike.node.remove();
     })
-    spikeArray = [];
+    spikeArray = []; //Limpiar todos los objetos y nodos
 
 }
 /*VIDA Y DAÑO DEL DRAGÓN*/
 function healthBeast(){
     actualHealth = actualHealth - 50;
-    healthRemaining.style.width = `${actualHealth}px`;
+    healthRemaining.style.width = `${actualHealth}px`; //Baja la barra de vida con cada flecha impactada
     
-    //console.log("Hitcounter", HitCounter);
     if (healthRemaining.style.width === `0px`){
         DeadBeastsnd.play();
-        gameEnd();
+        gameEnd(); //Cuando la vida llega a 0 salta la pantalla de victoria
     } else if(actualHealth <= 850 && beastObj.isSecondPhase === false){
         beastObj.isSecondPhase = true;
         healthRemaining.style.backgroundColor = `#ff5c00`;
@@ -221,11 +214,11 @@ function healthBeast(){
                 spikeSpawn();
             }, 800)    
         }, 3000)
-        
+        //Cuando llega a cierta vida, el dragón entra en segunda fase, haciendo un segundo ataque según un intervalo de tiempo.
     }
 }
 
-function damageDragon(){
+function damageDragon(){ // Animación del dragon recibiendo daño.
     beastObj.node.style.display = "none";
     setTimeout(()=>{
         beastObj.node.style.display = "block";
@@ -234,24 +227,24 @@ function damageDragon(){
 /*********************************************/
 
 /*FIREBALL SPAWN, DESPAWN AND COLLISION*/
-function fireballSpawn(){
+function fireballSpawn(){ // Spawn aleatorio de las bolas de fuego
     let randomPositionX = Math.floor(Math.random() * 600);
     let fireballObj = new Fireball(randomPositionX);
     fireballArray.push(fireballObj);
-    console.log(fireballArray.length);
+    console.log(fireballArray.length); 
 }
 
-function fireballDespawn(){
+function fireballDespawn(){ // Despawn de las bolas de fuego cuando tocan el borde inferior de la caja de juego.
     if (fireballArray.length > 0 && fireballArray[0].y > (gameBoxNode.offsetHeight - fireballArray[0].h)){
 
         // 1. Remover el Nodo
         fireballArray[0].node.remove();
         // 2. Removerlo del JS (Array)
-        fireballArray.shift();
+        fireballArray.shift(); 
     }
 }
 
-function checkColisionArcherFireball(){
+function checkColisionArcherFireball(){ //Colisión de las bolas de fuego con el jugador
     fireballArray.forEach((eachFireballObj)=>{
 
         if (
@@ -262,7 +255,7 @@ function checkColisionArcherFireball(){
           ) {
             // ¡colisión detectada!
             Ouchsnd.play();
-            gameOver();
+            gameOver(); // Si le da al arquero salta la pantalla de Game Over
           }
 
     })
@@ -270,7 +263,7 @@ function checkColisionArcherFireball(){
 /*******************************************************************/
 
 /*SPIKE SPAWN, DESPAWN AND COLLISION*/
-function spikeSpawn(){
+function spikeSpawn(){ // Spawn del pincho en la posición x del jugador
         Spikesnd.play();
         let spikeObj = new Spike(arqueroObj.x);
         spikeArray.push(spikeObj);
@@ -278,7 +271,7 @@ function spikeSpawn(){
     
 }
 
-function spikeDespawn(){
+function spikeDespawn(){ //Despawn del pincho cuando desaparece
     if (spikeArray.length > 0 && spikeArray[0].y > (gameBoxNode.offsetHeight + 50)){
                 // 1. Remover el Nodo
         spikeArray[0].node.remove();
@@ -289,7 +282,7 @@ function spikeDespawn(){
     }
 }
 
-function checkColisionArcherSpike(){
+function checkColisionArcherSpike(){ // Colisión del pincho con el jugador
     spikeArray.forEach((eachSpikeObj)=>{
 
         if (
@@ -308,7 +301,7 @@ function checkColisionArcherSpike(){
 /*******************************************************************/
 
 /*ARROW SPAWN, DESPAWN AND COLLISION*/
-window.addEventListener("keydown",(event)=>{
+window.addEventListener("keydown",(event)=>{ // Spawn de la flecha en la posicion X e Y del jugador
     if (event.code === "KeyK" && arqueroObj.canShoot === true){
 
         /*ANIMACION ATAQUE*/
@@ -317,7 +310,7 @@ window.addEventListener("keydown",(event)=>{
         arqueroObj.node.src = arqueroObj.arrayArcher[0];
         let counter = 1;
         arqueroObj.intervalArcher = setInterval(()=>{
-            arqueroObj.node.src = arqueroObj.arrayArcher[counter]; // La llamada se hace desde el index, por eso se pone un solo "."
+            arqueroObj.node.src = arqueroObj.arrayArcher[counter];
             counter ++;
             if (counter > arqueroObj.arrayArcher.length - 1){
                 counter = 0;
@@ -335,13 +328,13 @@ window.addEventListener("keydown",(event)=>{
         arrowArray.push(arrowObj);
         console.log(arrowArray.length);
 
-        Arrowsnd.play();
+        Arrowsnd.play(); // Sonido de la flecha
 
         arqueroObj.canShoot = false;
 
         setTimeout(()=>{
             arqueroObj.canShoot = true;
-         }, 1000)
+         }, 1000) // Cooldown del disparo
     }
 })
 
@@ -359,7 +352,7 @@ window.addEventListener("keydown",(event)=>{
     }
 }*/ //Código hecho antes del cambio hecho en la funcion checkColisionArrowBeast()
 
-function checkColisionArrowBeast(){
+function checkColisionArrowBeast(){ // Colisión de la flecha con el dragón
     arrowArray.forEach((eachArrowObj)=>{
 
         if (
@@ -383,30 +376,18 @@ function checkColisionArrowBeast(){
 }
 /*******************************************************************/
 
-/*ARQUERO*/
-/*function colisionArquero(){
-    if((arqueroObj.x + arqueroObj.w) >= (gameBoxNode.offsetWidth - 600)){
-        arqueroObj.isWalkingRight = false;
-    }else if ((arqueroObj.x + arqueroObj.w) <= arqueroObj.w) {
-        arqueroObj.isWalkingLeft = false;
-    }else if (arqueroObj.y >= 0) {
-        arqueroObj.isJumping = false;
-    }
-}
-/*******************/
-
 //* EVENT LISTENERS
-startBtnNode.addEventListener("click", ()=>{
+startBtnNode.addEventListener("click", ()=>{ //Botón de empezar a jugar
     startGame();
     Combatsnd.play();
 });
 
-restartBtnNode.addEventListener("click", ()=>{
+restartBtnNode.addEventListener("click", ()=>{ // Botón de reiniciar
     startGame();
     Combatsnd.play();
 });
 
-window.addEventListener("keydown",(event)=>{
+window.addEventListener("keydown",(event)=>{ // Botones de movimiento del jugador
     if (event.code === "KeyD"){
         arqueroObj.isWalkingRight = true;
     }else if (event.code === "KeyA"){
@@ -418,12 +399,12 @@ window.addEventListener("keydown",(event)=>{
         setTimeout(()=>{
             arqueroObj.isJumping = false;
             arqueroObj.canJump = true;
-         }, 500)
+         }, 500) //Cooldown del salto
         
     }
 })
 
-window.addEventListener("keyup",(event)=>{
+window.addEventListener("keyup",(event)=>{ // El jugador no se mueve si el boton del movimiento no está pulsado
     if (event.code === "KeyD"){
         arqueroObj.isWalkingRight = false;
     }else if (event.code === "KeyA"){
