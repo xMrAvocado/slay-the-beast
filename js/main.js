@@ -81,7 +81,7 @@ function startGame(){
     fireballSpawnIntervalId = setInterval(()=>{
         console.log("fireball")
         fireballSpawn();
-    }, 1500)
+    }, 500)
 }
 
 function gameLoop(){
