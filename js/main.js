@@ -51,7 +51,7 @@ Endingsnd.volume = 0.05;
 let Spikesnd = new Audio("./sounds/spike_spawn.wav");
 Spikesnd.volume = 0.05;
 let SpikeWarningsnd = new Audio("./sounds/spike_warning.wav");
-SpikeWarningsnd.volume = 0.05;
+SpikeWarningsnd.volume = 0.10;
 /**************************************************/
 
 
@@ -90,7 +90,7 @@ function startGame(){
     fireballSpawnIntervalId = setInterval(()=>{
         console.log("fireball")
         fireballSpawn();
-    }, 770)
+    }, 790)
     
 }
 
@@ -255,10 +255,10 @@ function checkColisionArcherFireball(){
     fireballArray.forEach((eachFireballObj)=>{
 
         if (
-            eachFireballObj.x < (arqueroObj.x + arqueroObj.w - 30) &&
-            eachFireballObj.x + eachFireballObj.w > arqueroObj.x &&
-            eachFireballObj.y -30 < arqueroObj.y + arqueroObj.h &&
-            eachFireballObj.h + eachFireballObj.y - 30 > arqueroObj.y
+            (eachFireballObj.x + 30) < (arqueroObj.x + arqueroObj.w) &&
+            eachFireballObj.x + eachFireballObj.w> arqueroObj.x &&
+            eachFireballObj.y + 45 < arqueroObj.y + arqueroObj.h &&
+            eachFireballObj.h + eachFireballObj.y > arqueroObj.y + 15
           ) {
             // ¡colisión detectada!
             Ouchsnd.play();
