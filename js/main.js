@@ -32,21 +32,21 @@ let HitCounter = 0;
 
 
 /*SOUNDS*/ 
-let Hitsnd = new Audio("../sounds/hit.wav");
+let Hitsnd = new Audio("./sounds/hit.wav");
 Hitsnd.volume = 0.05;
-let Arrowsnd = new Audio("../sounds/arrow_attack.wav");
+let Arrowsnd = new Audio("./sounds/arrow_attack.wav");
 Arrowsnd.volume = 0.05;
-let GameOversnd = new Audio("../sounds/game_over.mp3");
+let GameOversnd = new Audio("./sounds/game_over.mp3");
 GameOversnd.volume = 0.05;
-let StartButtonsnd = new Audio("../sounds/start_sound.flac");
+let StartButtonsnd = new Audio("./sounds/start_sound.flac");
 StartButtonsnd.volume = 0.05;
-let DeadBeastsnd = new Audio("../sounds/dead_beast.flac");
+let DeadBeastsnd = new Audio("./sounds/dead_beast.flac");
 DeadBeastsnd.volume = 0.05;
-let Ouchsnd = new Audio("../sounds/ouch_damage.flac");
+let Ouchsnd = new Audio("./sounds/ouch_damage.flac");
 Ouchsnd.volume = 0.05;
-let Combatsnd = new Audio("../sounds/combat_music.mp3");
+let Combatsnd = new Audio("./sounds/combat_music.mp3");
 Combatsnd.volume = 0.05;
-let Endingsnd = new Audio("../sounds/ending.wav");
+let Endingsnd = new Audio("./sounds/ending.wav");
 Endingsnd.volume = 0.05;
 
 //* FUNCIONES GLOBALES DEL JUEGO
