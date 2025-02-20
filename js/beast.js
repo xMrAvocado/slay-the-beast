@@ -13,7 +13,7 @@ class Beast {
             if (counter > this.arrayDragon.length - 1){
                 counter = 0;
             }
-            console.log("Intervalo Dragon");
+            //console.log("Intervalo Dragon");
         }, 500);
 
         // 2. configurar propiedades iniciales

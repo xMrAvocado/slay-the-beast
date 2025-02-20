@@ -14,6 +14,8 @@ let archerHealthRemaining = document.querySelector("#archer-health-remaining");
 let minutesLabel = document.querySelector("#minutes");
 let secondsLabel = document.querySelector("#seconds");
 
+//leaderboard
+let leaderboardNode = document.querySelector("#leaderboard");
 
 // botones
 const startBtnNode = document.querySelector("#start-btn")
@@ -40,6 +42,18 @@ let spikeSpawnTimeoutId = null; //Declarar los Interval y Timeout como variables
 
 let actualHealth = 1300; //Vida con la que empieza el enemigo y después se irá restando.
 let actualHealthArcher = 300; //Vida con la que empieza el jugador y después se irá restando.
+
+// Leaderboard
+let username;
+let leaderboard = JSON.parse(localStorage.getItem('leaderboard')); // Para más adelante extraer la info del localStorage
+console.log(leaderboard);
+
+if(leaderboard = null){
+    leaderboard = [];
+}
+/*
+
+*/
 
 /*SOUNDS*/ 
 let Hitsnd = new Audio("./sounds/hit.wav");
@@ -69,9 +83,11 @@ SpikeWarningsnd.volume = 0.10;
 
 function startGame(){
     actualHealth = 1300;
-    actualHealthArcher = 300;
+    actualHealthArcher = 300;//Cada vez que emmpieza la partida reseteamos las vidas al máximo
 
-    totalSeconds = 0; //Cada vez que emmpieza la partida reseteamos el temporizador a 0
+    totalSeconds = 0; 
+    minutesLabel.innerHTML = Math.floor(totalSeconds / 60).toString().padStart(2, "0");
+    secondsLabel.innerHTML = (totalSeconds % 60).toString().padStart(2, "0");           //Cada vez que emmpieza la partida reseteamos el temporizador a 0
 
     healthRemaining.style.backgroundColor = `red`;
     GameOversnd.pause(); //Se pausa la música de fin del juego.
@@ -106,7 +122,7 @@ function startGame(){
         fireballSpawn();
     }, 790)
 
-    //timerIntervalId = setInterval(setTime, 1000); // Intervalo del temporizador
+    timerIntervalId = setInterval(setTime, 1000); // Intervalo del temporizador
 }
 
 function gameLoop(){
@@ -215,7 +231,23 @@ function gameEnd(){
     })
     spikeArray = []; //Limpiar todos los objetos y nodos
 
+    /*PARA LEADERBOARD*/
+
+    //1. Extraer el score de usuario.
+    let actualTime = totalSeconds;
+    //2. Almacenarlo en el array
+    leaderboard.push(actualTime);
+    //3. Ordenar el array (de menor a mayor en este caso)
+    leaderboard.sort();
+    //4. Imprimirlo en la pantalla con manip. de DOM
+    leaderboard.forEach((eachTime)=>{
+        leaderboardNode.innerHTML += `<p>${Math.floor(eachTime / 60).toString().padStart(2, "0")}:${(eachTime % 60).toString().padStart(2, "0")} mins</p>`;
+    })
+    //console.log(leaderboard);
+    //5. Almacenar el array en el localStorage
+    localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
 }
+
 /*VIDA Y DAÑO DEL DRAGÓN*/
 function healthBeast(){
     actualHealth = actualHealth - 50;
@@ -224,7 +256,7 @@ function healthBeast(){
     if (healthRemaining.style.width === `0px`){
         DeadBeastsnd.play();
         gameEnd(); //Cuando la vida llega a 0 salta la pantalla de victoria
-    } else if(actualHealth <= 850 && beastObj.isSecondPhase === false){
+    } else if(actualHealth <= 750 && beastObj.isSecondPhase === false){
         beastObj.isSecondPhase = true;
         healthRemaining.style.backgroundColor = `#ff5c00`;
         DeadBeastsnd.play();
