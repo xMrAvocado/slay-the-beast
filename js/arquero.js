@@ -56,7 +56,7 @@ class Arquero {
     }
 
     gravityEffect(){
-        if((this.y + this.h)<= gameBoxNode.offsetHeight){
+        if((this.y + this.h) < gameBoxNode.offsetHeight){
             this.y += this.gravitySpeed;
             this.node.style.top = `${this.y}px`;
         }

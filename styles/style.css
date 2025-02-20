@@ -4,7 +4,7 @@ body {
   }
   
   #start-btn {
-    background-color: black;
+    background-color: rgb(105, 56, 24);
     color: white;
     padding: 20px;
     font-size: 40px;
@@ -12,13 +12,13 @@ body {
     font-weight: bolder;
   }
   #start-btn:hover{
-    background-color: #ed1c24;
+    background-color: black;
     font-style: italic;
     cursor: pointer;
   }
 
   #restart-btn {
-    background-color: black;
+    background-color: rgb(105, 56, 24);
     color: white;
     padding: 20px;
     font-size: 40px;
@@ -27,7 +27,7 @@ body {
     font-weight: bolder;
   }
   #restart-btn:hover{
-    background-color: #ed1c24;
+    background-color: black;
     font-style: italic;
     cursor: pointer;
   }
@@ -45,13 +45,17 @@ body {
     height:700px;
   
     position: relative; /* permite posicionar los elementos de forma absoluta dentro del game-box */
-    overflow: hidden; /* previene que los elementos salgan visualmente del game-box */
+    /*overflow: hidden; /* previene que los elementos salgan visualmente del game-box */
     user-select: none; /* previene que los elementos del game-box sean resaltados al hacer click */
   
     background-image: url("../images/FondoJuego.gif");
     background-position: center;
     background-size: cover;
     margin: 100px;
+
+    border-style: solid;
+    border-width: 3px;
+    border-color: black;
     /*********/
   }
   
@@ -73,12 +77,42 @@ body {
     background-color: #ddd;
     overflow: hidden;
     border-bottom-style: solid;
-    border-bottom-width: 20px;
-    border-bottom-color: #00bf63;
+    border-bottom-width: 3px;
+    border-bottom-color: black;
+    margin-bottom: 20px;
 }
 
 #health-remaining {
     height: 30px;
     background-color: red;
     width: 1300px;
+}
+
+#archer-health {
+  width: 300px;
+  background-color: #ddd;
+  overflow: hidden;
+  border-style: solid;
+  border-width: 3px;
+  border-color: black;
+  margin-left: 20px;
+}
+
+#archer-health-remaining {
+  height: 30px;
+  background-color: green;
+  width: 300px;
+}
+
+#minutes {
+  font-size: 2em;
+  margin-left: 20px;
+}
+
+#seconds {
+  font-size: 2em;
+}
+
+#colon {
+  font-size: 2em;
 }

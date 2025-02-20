@@ -5,7 +5,14 @@ const splashScreenNode = document.querySelector("#splash-screen")
 const gameScreenNode = document.querySelector("#game-screen")
 const gameOverScreenNode = document.querySelector("#game-over-screen")
 const victoryScreenNode = document.querySelector("#victory-screen")
+
+// Vidas
 let healthRemaining = document.querySelector("#health-remaining");
+let archerHealthRemaining = document.querySelector("#archer-health-remaining");
+
+// Tiempo
+let minutesLabel = document.querySelector("#minutes");
+let secondsLabel = document.querySelector("#seconds");
 
 
 // botones
@@ -16,6 +23,8 @@ const restartBtnNode = document.querySelector("#restart-btn")
 const gameBoxNode = document.querySelector("#game-box")
 
 //* VARIABLES GLOBALES DEL JUEGO
+let totalSeconds = 0; //Contador para hacer la operación del temporizador.
+
 let arqueroObj = null;
 let beastObj = null;
 
@@ -26,9 +35,11 @@ let spikeArray = [];
 let gameIntervalId = null;
 let fireballSpawnIntervalId = null;
 let spikeSpawnIntervalId = null;
+let timerIntervalId = null;
 let spikeSpawnTimeoutId = null; //Declarar los Interval y Timeout como variables globales.
 
 let actualHealth = 1300; //Vida con la que empieza el enemigo y después se irá restando.
+let actualHealthArcher = 300; //Vida con la que empieza el jugador y después se irá restando.
 
 /*SOUNDS*/ 
 let Hitsnd = new Audio("./sounds/hit.wav");
@@ -58,6 +69,10 @@ SpikeWarningsnd.volume = 0.10;
 
 function startGame(){
     actualHealth = 1300;
+    actualHealthArcher = 300;
+
+    totalSeconds = 0; //Cada vez que emmpieza la partida reseteamos el temporizador a 0
+
     healthRemaining.style.backgroundColor = `red`;
     GameOversnd.pause(); //Se pausa la música de fin del juego.
     GameOversnd.currentTime = 0; // La musica de fin del juego empieza de 0 siempre.
@@ -65,8 +80,10 @@ function startGame(){
     Combatsnd.currentTime = 0; //La musica de combate empieza de 0 siempre.
 
     StartButtonsnd.play(); //Sonido de click del botón
-    //HitCounter = 1;
+
     healthRemaining.style.width = `1300px`
+    archerHealthRemaining.style.width = `300px`
+
     // 1. ocultar la pantalla inicial
     splashScreenNode.style.display = "none";
     // 2. mostrar pantalla del juego
@@ -76,9 +93,9 @@ function startGame(){
     gameOverScreenNode.style.display = "none";
     // 4. añadir los elementos iniciales del juego
     arqueroObj = new Arquero();
-    console.log(arqueroObj);
+    //console.log(arqueroObj);
     beastObj = new Beast();
-    console.log(beastObj);
+    //console.log(beastObj);
 
     // 4. iniciar intervalo principal del juego
     gameIntervalId = setInterval(()=>{
@@ -88,7 +105,8 @@ function startGame(){
     fireballSpawnIntervalId = setInterval(()=>{
         fireballSpawn();
     }, 790)
-    
+
+    //timerIntervalId = setInterval(setTime, 1000); // Intervalo del temporizador
 }
 
 function gameLoop(){
@@ -130,6 +148,7 @@ function gameOver(){
     clearInterval(fireballSpawnIntervalId);
     clearTimeout(spikeSpawnTimeoutId);
     clearInterval(spikeSpawnIntervalId);
+    clearInterval(timerIntervalId);
 
     // 2. Ocultar la pantalla de juego
     gameScreenNode.style.display = "none";
@@ -169,6 +188,7 @@ function gameEnd(){
     clearInterval(fireballSpawnIntervalId);
     clearTimeout(spikeSpawnTimeoutId);
     clearInterval(spikeSpawnIntervalId);
+    clearInterval(timerIntervalId);
 
     // 2. Ocultar la pantalla de juego
     gameScreenNode.style.display = "none";
@@ -226,12 +246,31 @@ function damageDragon(){ // Animación del dragon recibiendo daño.
 }
 /*********************************************/
 
+/*VIDA Y DAÑO DEL JUGADOR*/
+function healthArcher(){
+    actualHealthArcher = actualHealthArcher - 100;
+    archerHealthRemaining.style.width = `${actualHealthArcher}px`; //Baja la barra de vida con cada bola de fuego o pincho
+    
+    if (archerHealthRemaining.style.width === `0px`){
+        DeadBeastsnd.play();
+        gameOver(); //Cuando la vida llega a 0 salta la pantalla de game over
+    }
+}
+
+function damageArcher(){ // Animación del jugador recibiendo daño.
+    arqueroObj.node.style.display = "none";
+    setTimeout(()=>{
+        arqueroObj.node.style.display = "block";
+    }, 50)
+}
+/*****************************************************/
+
 /*FIREBALL SPAWN, DESPAWN AND COLLISION*/
 function fireballSpawn(){ // Spawn aleatorio de las bolas de fuego
     let randomPositionX = Math.floor(Math.random() * 600);
     let fireballObj = new Fireball(randomPositionX);
     fireballArray.push(fireballObj);
-    console.log(fireballArray.length); 
+    //console.log(fireballArray.length); 
 }
 
 function fireballDespawn(){ // Despawn de las bolas de fuego cuando tocan el borde inferior de la caja de juego.
@@ -248,14 +287,19 @@ function checkColisionArcherFireball(){ //Colisión de las bolas de fuego con el
     fireballArray.forEach((eachFireballObj)=>{
 
         if (
-            (eachFireballObj.x + 30) < (arqueroObj.x + arqueroObj.w) &&
-            eachFireballObj.x + eachFireballObj.w> arqueroObj.x &&
-            eachFireballObj.y + 45 < arqueroObj.y + arqueroObj.h &&
+            eachFireballObj.x < (arqueroObj.x + arqueroObj.w - 30) &&
+            eachFireballObj.x + eachFireballObj.w> arqueroObj.x + 10 &&
+            eachFireballObj.y < (arqueroObj.y + arqueroObj.h  - 45) &&
             eachFireballObj.h + eachFireballObj.y > arqueroObj.y + 15
           ) {
             // ¡colisión detectada!
             Ouchsnd.play();
-            gameOver(); // Si le da al arquero salta la pantalla de Game Over
+            // 1. Remover el Nodo
+            fireballArray[0].node.remove();
+            // 2. Removerlo del JS (Array)
+            fireballArray.shift(); 
+            healthArcher();
+            damageArcher();
           }
 
     })
@@ -267,18 +311,16 @@ function spikeSpawn(){ // Spawn del pincho en la posición x del jugador
         Spikesnd.play();
         let spikeObj = new Spike(arqueroObj.x);
         spikeArray.push(spikeObj);
-        console.log(spikeArray.length);
+        //console.log(spikeArray.length);
     
 }
 
 function spikeDespawn(){ //Despawn del pincho cuando desaparece
     if (spikeArray.length > 0 && spikeArray[0].y > (gameBoxNode.offsetHeight + 50)){
-                // 1. Remover el Nodo
+        // 1. Remover el Nodo
         spikeArray[0].node.remove();
         // 2. Removerlo del JS (Array)
         spikeArray.shift();
-        
-        
     }
 }
 
@@ -293,7 +335,12 @@ function checkColisionArcherSpike(){ // Colisión del pincho con el jugador
           ) {
             // ¡colisión detectada!
             Ouchsnd.play();
-            gameOver();
+            // 1. Remover el Nodo
+            spikeArray[0].node.remove();
+            // 2. Removerlo del JS (Array)
+            spikeArray.shift();
+            healthArcher();
+            damageArcher();
           }
 
     })
@@ -315,7 +362,7 @@ window.addEventListener("keydown",(event)=>{ // Spawn de la flecha en la posicio
             if (counter > arqueroObj.arrayArcher.length - 1){
                 counter = 0;
             }
-            console.log("Intervalo Arquero");
+            //console.log("Intervalo Arquero");
         }, 380);
         setTimeout(()=>{
             clearInterval(arqueroObj.intervalArcher);
@@ -326,7 +373,7 @@ window.addEventListener("keydown",(event)=>{ // Spawn de la flecha en la posicio
         let positionY = arqueroObj.y;
         let arrowObj = new Arrow(positionX, positionY);
         arrowArray.push(arrowObj);
-        console.log(arrowArray.length);
+        //console.log(arrowArray.length);
 
         Arrowsnd.play(); // Sonido de la flecha
 
@@ -375,6 +422,14 @@ function checkColisionArrowBeast(){ // Colisión de la flecha con el dragón
     })
 }
 /*******************************************************************/
+
+/*TEMPORIZADOR*/
+function setTime() {
+    totalSeconds++;
+    minutesLabel.innerHTML = Math.floor(totalSeconds / 60).toString().padStart(2, "0");
+    secondsLabel.innerHTML = (totalSeconds % 60).toString().padStart(2, "0");
+  }
+/****************************************/
 
 //* EVENT LISTENERS
 startBtnNode.addEventListener("click", ()=>{ //Botón de empezar a jugar
