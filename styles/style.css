@@ -119,14 +119,23 @@ body {
 #minutes {
   font-size: 2em;
   margin-left: 20px;
+  font-size: 2rem;
+  font-weight: bold;
+  font-family:'Courier New', Courier, monospace;
 }
 
 #seconds {
   font-size: 2em;
+  font-size: 2rem;
+  font-weight: bold;
+  font-family:'Courier New', Courier, monospace;
 }
 
 #colon {
   font-size: 2em;
+  font-size: 2rem;
+  font-weight: bold;
+  font-family:'Courier New', Courier, monospace;
 }
 
 #best-times-title{
@@ -164,4 +173,17 @@ p{
   border-color: black;
   border-radius: 10px;
   padding: 0% 2% 2% 2%;
+}
+
+#arrows-left{
+  color: brown;
+  background-color: white;
+  border-style: solid;
+  border-width: 2px;
+  border-color: black;
+  font-size: 2rem;
+  font-weight: bold;
+  font-family:'Courier New', Courier, monospace;
+  margin-left: 20px;
+  padding: 0% 0.5% 0% 0.5%;
 }

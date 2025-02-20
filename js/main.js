@@ -17,6 +17,9 @@ let secondsLabel = document.querySelector("#seconds");
 //leaderboard
 let leaderboardNode = document.querySelector("#leaderboard");
 
+// Flechas
+let arrowsLeftLabel = document.querySelector("#arrows-left");
+
 // botones
 const startBtnNode = document.querySelector("#start-btn")
 const restartBtnNode = document.querySelector("#restart-btn")
@@ -27,17 +30,21 @@ const gameBoxNode = document.querySelector("#game-box")
 //* VARIABLES GLOBALES DEL JUEGO
 let totalSeconds = 0; //Contador para hacer la operación del temporizador.
 
+let totalArrows = 8;
+
 let arqueroObj = null;
 let beastObj = null;
 
 let fireballArray = [];
 let arrowArray = [];
 let spikeArray = [];
+let returnArrowArray = [];
 
 let gameIntervalId = null;
 let fireballSpawnIntervalId = null;
 let spikeSpawnIntervalId = null;
 let timerIntervalId = null;
+let returnArrowSpawnIntervalId = null;
 let spikeSpawnTimeoutId = null; //Declarar los Interval y Timeout como variables globales.
 
 let actualHealth = 1300; //Vida con la que empieza el enemigo y después se irá restando.
@@ -76,6 +83,8 @@ let Spikesnd = new Audio("./sounds/spike_spawn.wav");
 Spikesnd.volume = 0.05;
 let SpikeWarningsnd = new Audio("./sounds/spike_warning.wav");
 SpikeWarningsnd.volume = 0.10;
+let PickArrowsnd = new Audio("./sounds/pick_arrow.mp3");
+PickArrowsnd.volume = 0.05;
 /**************************************************/
 
 
@@ -85,9 +94,13 @@ function startGame(){
     actualHealth = 1300;
     actualHealthArcher = 300;//Cada vez que emmpieza la partida reseteamos las vidas al máximo
 
-    totalSeconds = 0; 
+    totalSeconds = 0;
+    
     minutesLabel.innerHTML = Math.floor(totalSeconds / 60).toString().padStart(2, "0");
     secondsLabel.innerHTML = (totalSeconds % 60).toString().padStart(2, "0");           //Cada vez que emmpieza la partida reseteamos el temporizador a 0
+
+    totalArrows = 8;
+    arrowsLeftLabel.innerHTML = totalArrows.toString().padStart(2, "0");
 
     healthRemaining.style.backgroundColor = `red`;
     GameOversnd.pause(); //Se pausa la música de fin del juego.
@@ -122,6 +135,10 @@ function startGame(){
         fireballSpawn();
     }, 790)
 
+    returnArrowSpawnIntervalId = setInterval(()=>{
+        returnArrowSpawn();
+    }, 3000)
+
     timerIntervalId = setInterval(setTime, 1000); // Intervalo del temporizador
 }
 
@@ -148,6 +165,8 @@ function gameLoop(){
     checkColisionArcherSpike(); //Despawn y colision del pincho
     spikeDespawn();
 
+    checkColisionArcherReturnArrow();
+
     arqueroObj.walkRigth();
     arqueroObj.walkLeft();
     arqueroObj.jumpEffect(); //Efectos de movimiento del jugador
@@ -165,6 +184,7 @@ function gameOver(){
     clearTimeout(spikeSpawnTimeoutId);
     clearInterval(spikeSpawnIntervalId);
     clearInterval(timerIntervalId);
+    clearInterval(returnArrowSpawnIntervalId);
 
     // 2. Ocultar la pantalla de juego
     gameScreenNode.style.display = "none";
@@ -186,6 +206,10 @@ function gameOver(){
         eachArrow.node.remove();
     })
     arrowArray= [];
+    returnArrowArray.forEach((eachArrowReturn)=>{
+        eachArrowReturn.node.remove();
+    })
+    returnArrowArray = [];
     spikeArray.forEach((eachSpike)=>{
         eachSpike.node.remove();
     })
@@ -205,6 +229,7 @@ function gameEnd(){
     clearTimeout(spikeSpawnTimeoutId);
     clearInterval(spikeSpawnIntervalId);
     clearInterval(timerIntervalId);
+    clearInterval(returnArrowSpawnIntervalId);
 
     // 2. Ocultar la pantalla de juego
     gameScreenNode.style.display = "none";
@@ -222,6 +247,10 @@ function gameEnd(){
         eachFireball.node.remove();
     })
     fireballArray = [];
+    returnArrowArray.forEach((eachArrowReturn)=>{
+        eachArrowReturn.node.remove();
+    })
+    returnArrowArray = [];
     arrowArray.forEach((eachArrow)=>{
         eachArrow.node.remove();
     })
@@ -338,6 +367,48 @@ function checkColisionArcherFireball(){ //Colisión de las bolas de fuego con el
 }
 /*******************************************************************/
 
+/*RETURN ARROW SPAWN, DESPAWN AND COLLISION */
+function returnArrowSpawn(){ // Spawn aleatorio de la recuperacion de flechas
+    let randomPositionX = Math.floor(Math.random() * 600);
+    let randomPositionY = Math.floor(Math.random() * ((gameBoxNode.offsetHeight - 100) - 400 + 1) + 400);
+    let returnArrowObj = new ReturnArrow(randomPositionX, randomPositionY);
+    returnArrowArray.push(returnArrowObj);
+}
+
+/*function returnArrowDespawn(){ // Despawn de la recuperacion de flechas
+    if (fireballArray.length > 0 && fireballArray[0].y > (gameBoxNode.offsetHeight - fireballArray[0].h)){
+
+        // 1. Remover el Nodo
+        returnArrowArray[0].node.remove();
+        // 2. Removerlo del JS (Array)
+        returnArrowArray.shift(); 
+    }
+}*/
+
+function checkColisionArcherReturnArrow(){ //Colisión de las bolas de fuego con el jugador
+    returnArrowArray.forEach((eachReturnArrowObj, i)=>{
+
+        if (
+            eachReturnArrowObj.x < (arqueroObj.x + arqueroObj.w) &&
+            eachReturnArrowObj.x + eachReturnArrowObj.w> arqueroObj.x &&
+            eachReturnArrowObj.y < (arqueroObj.y + arqueroObj.h) &&
+            eachReturnArrowObj.h + eachReturnArrowObj.y > arqueroObj.y
+          ) {
+            // ¡colisión detectada!
+            PickArrowsnd.play();
+
+            totalArrows++//Sumar una flecha al contador
+            arrowsLeftLabel.innerHTML = totalArrows.toString().padStart(2, "0");
+
+            // 1. Remover el Nodo
+            eachReturnArrowObj.node.remove();
+            // 2. Removerlo del JS (Array)
+            returnArrowArray.splice(i, 1);
+          }
+
+    })
+}
+/************************************/
 /*SPIKE SPAWN, DESPAWN AND COLLISION*/
 function spikeSpawn(){ // Spawn del pincho en la posición x del jugador
         Spikesnd.play();
@@ -381,7 +452,7 @@ function checkColisionArcherSpike(){ // Colisión del pincho con el jugador
 
 /*ARROW SPAWN, DESPAWN AND COLLISION*/
 window.addEventListener("keydown",(event)=>{ // Spawn de la flecha en la posicion X e Y del jugador
-    if (event.code === "KeyK" && arqueroObj.canShoot === true){
+    if (event.code === "KeyK" && arqueroObj.canShoot === true && totalArrows > 0){
 
         /*ANIMACION ATAQUE*/
         arqueroObj.arrayArcher = ["./images/Archer/Attack3.PNG", "./images/Archer/Attack1.PNG"];
@@ -408,6 +479,9 @@ window.addEventListener("keydown",(event)=>{ // Spawn de la flecha en la posicio
         //console.log(arrowArray.length);
 
         Arrowsnd.play(); // Sonido de la flecha
+
+        totalArrows--//Restar una flecha del contador
+        arrowsLeftLabel.innerHTML = totalArrows.toString().padStart(2, "0");
 
         arqueroObj.canShoot = false;
 
