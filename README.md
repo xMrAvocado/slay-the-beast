@@ -79,6 +79,7 @@ Slay the Beast is a game where the player tries to kill a big bad monster while 
 ## arquero.js
 
 - Arquero () {
+    
     this.node;
 
     this.x;
@@ -104,6 +105,7 @@ Slay the Beast is a game where the player tries to kill a big bad monster while 
 ## arrow.js
 
 - Arrow (positionX, positionY) {
+
     this.node;
 
     this.x;
@@ -118,6 +120,7 @@ Slay the Beast is a game where the player tries to kill a big bad monster while 
 ## beast.js
 
 - Beast () {
+
     this.node;
 
     this.x;
@@ -131,6 +134,7 @@ Slay the Beast is a game where the player tries to kill a big bad monster while 
 ## fireball.js
 
 - Fireball (positionX) {
+
     this.node;
 
     this.x;
@@ -145,6 +149,7 @@ Slay the Beast is a game where the player tries to kill a big bad monster while 
 ## returnArrow.js
 
 - ReturnArrow (positionX, positionY) {
+
     this.node;
 
     this.x;
@@ -158,6 +163,7 @@ Slay the Beast is a game where the player tries to kill a big bad monster while 
 ## spike.js
 
 - Spike (positionX) {
+
     this.node;
 
     this.x;
@@ -178,5 +184,5 @@ Slay the Beast is a game where the player tries to kill a big bad monster while 
 ### Slides
 [Link](https://www.canva.com/design/DAGful7zNcQ/qdRZEfKI8PzOAfr5eF7eGw/view?utm_content=DAGful7zNcQ&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h7e132bde44)
 
-## Deploy
+### Deploy
 [Link](https://xmravocado.github.io/slay-the-beast/)
