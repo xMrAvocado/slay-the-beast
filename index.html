@@ -1,61 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SLAY THE BEAST</title>
-    <link rel="stylesheet" href="./styles/style.css">
-</head>
-<body>
+    <link rel="stylesheet" href="./styles/style.css" />
+  </head>
+  <body>
     <!--PANTALLA DE INICIO-->
     <div id="splash-screen" class="container">
-        <img src="./images/logo.png" width="550" alt="logo">
-        <button id="start-btn">START</button>
-        <img src="./images/Controles.png" width="250" alt="ctrls">
+      <img src="./images/logo.png" width="550" alt="logo" />
+      <button id="start-btn">START</button>
+      <img src="./images/Controles.png" width="250" alt="ctrls" />
     </div>
 
     <!--PANTALLA DE JUEGO-->
     <div id="game-screen" class="container">
-        <!-- Elementos del juego como puntuación, vidas, etc deberia ir aqui (dentro del game-screen pero fuera del game-box) -->
-        <div id="game-box">
-          <!-- Los elementos del juego serán añadidos desde JS con manipulación de DOM -->
-          <div id="beast-health">
-            <div id="health-remaining"></div>
-          </div>
-          <div id="archer-health">
-            <div id="archer-health-remaining"></div>
-          </div>
-          <div id="timer">
-            <label id="minutes">00</label>
-            <label id="colon">:</label>
-            <label id="seconds">00</label>   
-          </div>
-          <label id="arrows-left">08</label>
+      <!-- Elementos del juego como puntuación, vidas, etc deberia ir aqui (dentro del game-screen pero fuera del game-box) -->
+      <div id="game-box">
+        <!-- Los elementos del juego serán añadidos desde JS con manipulación de DOM -->
+        <div id="beast-health">
+          <div id="health-remaining"></div>
         </div>
-        
+        <div id="archer-health">
+          <div id="archer-health-remaining"></div>
+        </div>
+        <div id="timer">
+          <label id="minutes">00</label>
+          <label id="colon">:</label>
+          <label id="seconds">00</label>
+        </div>
+        <label id="arrows-left">08</label>
+      </div>
     </div>
 
     <!-- PANTALLA GAME OVER -->
     <div id="game-over-screen" class="container">
-        <img src="./images/gameover.gif" width="590" alt="gameoverlogo">
-        <button id="restart-btn">RESTART</button>
+      <img src="./images/gameover.gif" width="590" alt="gameoverlogo" />
+      <button id="restart-btn">RESTART</button>
     </div>
     <!-- PANTALLA VICTORIA -->
     <div id="victory-screen" class="container">
-        <img src="./images/gameend.png" width="700" alt="victorylogo">
-        <div id="tableTimes">
-            <h3 id="best-times-title">BEST TIMES</h3>
-            <div id="leaderboard">
-                
-            </div>
-        </div>
+      <img src="./images/gameend.png" width="700" alt="victorylogo" />
+      <div id="tableTimes">
+        <h3 id="best-times-title">BEST TIMES</h3>
+        <div id="leaderboard"></div>
+      </div>
     </div>
+
     <script src="./js/main.js"></script>
     <script src="./js/arquero.js"></script>
-   <script src="./js/beast.js"></script>
-   <script src="./js/fireball.js"></script>
-   <script src="./js/arrow.js"></script>
-   <script src="./js/spike.js"></script>
-   <script src="./js/returnArrow.js"></script>
-</body>
+    <script src="./js/beast.js"></script>
+    <script src="./js/fireball.js"></script>
+    <script src="./js/arrow.js"></script>
+    <script src="./js/spike.js"></script>
+    <script src="./js/returnArrow.js"></script>
+  </body>
 </html>

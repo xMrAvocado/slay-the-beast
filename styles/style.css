@@ -101,7 +101,7 @@ body {
 }
 
 #archer-health {
-  width: 300px;
+  width: 400px;
   background-color: #ddd;
   overflow: hidden;
   border-style: solid;
@@ -113,7 +113,7 @@ body {
 #archer-health-remaining {
   height: 30px;
   background-color: green;
-  width: 300px;
+  width: 400px;
 }
 
 #minutes {

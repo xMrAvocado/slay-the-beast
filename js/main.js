@@ -30,7 +30,7 @@ const gameBoxNode = document.querySelector("#game-box")
 //* VARIABLES GLOBALES DEL JUEGO
 let totalSeconds = 0; //Contador para hacer la operación del temporizador.
 
-let totalArrows = 8;
+let totalArrows = 10;
 
 let arqueroObj = null;
 let beastObj = null;
@@ -48,19 +48,23 @@ let returnArrowSpawnIntervalId = null;
 let spikeSpawnTimeoutId = null; //Declarar los Interval y Timeout como variables globales.
 
 let actualHealth = 1300; //Vida con la que empieza el enemigo y después se irá restando.
-let actualHealthArcher = 300; //Vida con la que empieza el jugador y después se irá restando.
+let actualHealthArcher = 400; //Vida con la que empieza el jugador y después se irá restando.
 
 // Leaderboard
 let username;
 let leaderboard = JSON.parse(localStorage.getItem('leaderboard')); // Para más adelante extraer la info del localStorage
-console.log(leaderboard);
 
-if(leaderboard = null){
+if(leaderboard === null){
     leaderboard = [];
 }
-/*
 
-*/
+/*
+let leaderboard;
+if(JSON.parse(localStorage.getItem('leaderboard')) === null){
+leaderboard = [];
+}else{
+leaderboard = JSON.parse(localStorage.getItem('leaderboard'));
+}*/
 
 /*SOUNDS*/ 
 let Hitsnd = new Audio("./sounds/hit.wav");
@@ -92,15 +96,18 @@ PickArrowsnd.volume = 0.05;
 
 function startGame(){
     actualHealth = 1300;
-    actualHealthArcher = 300;//Cada vez que emmpieza la partida reseteamos las vidas al máximo
+    actualHealthArcher = 400;//Cada vez que emmpieza la partida reseteamos las vidas al máximo
+
+    healthRemaining.style.width = `${actualHealth}px`
+    archerHealthRemaining.style.width = `${actualHealthArcher}px`
 
     totalSeconds = 0;
     
     minutesLabel.innerHTML = Math.floor(totalSeconds / 60).toString().padStart(2, "0");
     secondsLabel.innerHTML = (totalSeconds % 60).toString().padStart(2, "0");           //Cada vez que emmpieza la partida reseteamos el temporizador a 0
 
-    totalArrows = 8;
-    arrowsLeftLabel.innerHTML = totalArrows.toString().padStart(2, "0");
+    totalArrows = 10;
+    arrowsLeftLabel.innerHTML = totalArrows.toString().padStart(2, "0");    //Cada vez que emmpieza la partida reseteamos el total de flechas a 10
 
     healthRemaining.style.backgroundColor = `red`;
     GameOversnd.pause(); //Se pausa la música de fin del juego.
@@ -110,27 +117,26 @@ function startGame(){
 
     StartButtonsnd.play(); //Sonido de click del botón
 
-    healthRemaining.style.width = `1300px`
-    archerHealthRemaining.style.width = `300px`
-
     // 1. ocultar la pantalla inicial
     splashScreenNode.style.display = "none";
+
     // 2. mostrar pantalla del juego
     gameScreenNode.style.display = "flex";
+
     // 3. ocultar la pantalla reinicio
     victoryScreenNode.style.display = "none";
     gameOverScreenNode.style.display = "none";
+
     // 4. añadir los elementos iniciales del juego
     arqueroObj = new Arquero();
-    //console.log(arqueroObj);
     beastObj = new Beast();
-    //console.log(beastObj);
 
-    // 4. iniciar intervalo principal del juego
+    // 5. iniciar intervalo principal del juego
     gameIntervalId = setInterval(()=>{
         gameLoop();
     }, Math.round(1000/60));
-    // 5. iniciaremos otros intervalos adicionales
+
+    // 6. iniciaremos otros intervalos adicionales
     fireballSpawnIntervalId = setInterval(()=>{
         fireballSpawn();
     }, 790)
@@ -264,15 +270,28 @@ function gameEnd(){
 
     //1. Extraer el score de usuario.
     let actualTime = totalSeconds;
+
     //2. Almacenarlo en el array
     leaderboard.push(actualTime);
+
     //3. Ordenar el array (de menor a mayor en este caso)
-    leaderboard.sort();
+    leaderboard.sort((elem1, elem2)=>{
+        // agregamos una condicion de orden para que el sistema sepa si los va a ordenar numericamente, alfabeticamente, descendiente o ascendente.
+    
+        if(elem1 > elem2){
+            return 1; //valor negativo indica que el primero va primero
+        }else if(elem2 > elem1){
+            return -1; //valor positivo indica que el primero va despues
+        }else{
+            return 0; //indica que los elemento no deben cambiar su orden
+        }
+    });
+
     //4. Imprimirlo en la pantalla con manip. de DOM
     leaderboard.forEach((eachTime)=>{
         leaderboardNode.innerHTML += `<p>${Math.floor(eachTime / 60).toString().padStart(2, "0")}:${(eachTime % 60).toString().padStart(2, "0")} mins</p>`;
     })
-    //console.log(leaderboard);
+
     //5. Almacenar el array en el localStorage
     localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
 }
@@ -293,8 +312,8 @@ function healthBeast(){
             SpikeWarningsnd.play();
             spikeSpawnTimeoutId = setTimeout(()=>{
                 spikeSpawn();
-            }, 800)    
-        }, 3000)
+            }, 1000)    
+        }, 3500)
         //Cuando llega a cierta vida, el dragón entra en segunda fase, haciendo un segundo ataque según un intervalo de tiempo.
     }
 }
@@ -331,7 +350,6 @@ function fireballSpawn(){ // Spawn aleatorio de las bolas de fuego
     let randomPositionX = Math.floor(Math.random() * 600);
     let fireballObj = new Fireball(randomPositionX);
     fireballArray.push(fireballObj);
-    //console.log(fireballArray.length); 
 }
 
 function fireballDespawn(){ // Despawn de las bolas de fuego cuando tocan el borde inferior de la caja de juego.
@@ -339,6 +357,7 @@ function fireballDespawn(){ // Despawn de las bolas de fuego cuando tocan el bor
 
         // 1. Remover el Nodo
         fireballArray[0].node.remove();
+
         // 2. Removerlo del JS (Array)
         fireballArray.shift(); 
     }
@@ -357,12 +376,12 @@ function checkColisionArcherFireball(){ //Colisión de las bolas de fuego con el
             Ouchsnd.play();
             // 1. Remover el Nodo
             fireballArray[0].node.remove();
+
             // 2. Removerlo del JS (Array)
             fireballArray.shift(); 
             healthArcher();
             damageArcher();
           }
-
     })
 }
 /*******************************************************************/
@@ -374,16 +393,6 @@ function returnArrowSpawn(){ // Spawn aleatorio de la recuperacion de flechas
     let returnArrowObj = new ReturnArrow(randomPositionX, randomPositionY);
     returnArrowArray.push(returnArrowObj);
 }
-
-/*function returnArrowDespawn(){ // Despawn de la recuperacion de flechas
-    if (fireballArray.length > 0 && fireballArray[0].y > (gameBoxNode.offsetHeight - fireballArray[0].h)){
-
-        // 1. Remover el Nodo
-        returnArrowArray[0].node.remove();
-        // 2. Removerlo del JS (Array)
-        returnArrowArray.shift(); 
-    }
-}*/
 
 function checkColisionArcherReturnArrow(){ //Colisión de las bolas de fuego con el jugador
     returnArrowArray.forEach((eachReturnArrowObj, i)=>{
@@ -405,23 +414,22 @@ function checkColisionArcherReturnArrow(){ //Colisión de las bolas de fuego con
             // 2. Removerlo del JS (Array)
             returnArrowArray.splice(i, 1);
           }
-
     })
 }
 /************************************/
+
 /*SPIKE SPAWN, DESPAWN AND COLLISION*/
 function spikeSpawn(){ // Spawn del pincho en la posición x del jugador
         Spikesnd.play();
         let spikeObj = new Spike(arqueroObj.x);
         spikeArray.push(spikeObj);
-        //console.log(spikeArray.length);
-    
 }
 
 function spikeDespawn(){ //Despawn del pincho cuando desaparece
     if (spikeArray.length > 0 && spikeArray[0].y > (gameBoxNode.offsetHeight + 50)){
         // 1. Remover el Nodo
         spikeArray[0].node.remove();
+
         // 2. Removerlo del JS (Array)
         spikeArray.shift();
     }
@@ -440,12 +448,12 @@ function checkColisionArcherSpike(){ // Colisión del pincho con el jugador
             Ouchsnd.play();
             // 1. Remover el Nodo
             spikeArray[0].node.remove();
+
             // 2. Removerlo del JS (Array)
             spikeArray.shift();
             healthArcher();
             damageArcher();
           }
-
     })
 }
 /*******************************************************************/
@@ -465,7 +473,6 @@ window.addEventListener("keydown",(event)=>{ // Spawn de la flecha en la posicio
             if (counter > arqueroObj.arrayArcher.length - 1){
                 counter = 0;
             }
-            //console.log("Intervalo Arquero");
         }, 380);
         setTimeout(()=>{
             clearInterval(arqueroObj.intervalArcher);
@@ -476,7 +483,6 @@ window.addEventListener("keydown",(event)=>{ // Spawn de la flecha en la posicio
         let positionY = arqueroObj.y;
         let arrowObj = new Arrow(positionX, positionY);
         arrowArray.push(arrowObj);
-        //console.log(arrowArray.length);
 
         Arrowsnd.play(); // Sonido de la flecha
 
@@ -517,14 +523,15 @@ function checkColisionArrowBeast(){ // Colisión de la flecha con el dragón
             // ¡colisión detectada!
             // 1. Remover el Nodo
             arrowArray[0].node.remove();
+
             // 2. Removerlo del JS (Array)
             arrowArray.shift();
-            /*En caso de que la flecha pudiera fallar, hay que cambiar el código de remover el nodo*/ 
+            /*En caso de que la flecha pudiera fallar, hay que cambiar el código de remover el nodo*/
+
             healthBeast();
             damageDragon();
             Hitsnd.play();
           }
-
     })
 }
 /*******************************************************************/
@@ -561,7 +568,6 @@ window.addEventListener("keydown",(event)=>{ // Botones de movimiento del jugado
             arqueroObj.isJumping = false;
             arqueroObj.canJump = true;
          }, 500) //Cooldown del salto
-        
     }
 })
 
